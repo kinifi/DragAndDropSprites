@@ -2,11 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour {
+public class DragAndDropManager : MonoBehaviour {
 
-    public static GameManager instance = null;
+    public static DragAndDropManager instance = null;
+
+    [Header("Are we currently dragging and object?")]
     public bool isDragging = false;
 
+    [Header("Snap Objects when dropped to the middle")]
+    public bool enableSnapping = true;
+
+    [Header("The Position we started dragging the Object")]
+    public Transform m_PreviousPosition;
+
+    [Header("The Objects we can drag and drop on to")]
     public GameObject[] m_Placements;
 
     //Awake is always called before any Start functions
@@ -55,8 +64,17 @@ public class GameManager : MonoBehaviour {
             bool overSprite = setDownGameObject.gameObject.GetComponent<SpriteRenderer>().bounds.Contains(m_Placements[i].transform.position);
             if (overSprite)
             {
-                //Debug.Log("On Top Of: " + m_Placements[i].name);
-                setDownGameObject.SendMessage("OnPlaced", m_Placements[i], SendMessageOptions.RequireReceiver);
+                //tell the object being placed they have been placed
+                setDownGameObject.SendMessage("OnPlaced", m_Placements[i], SendMessageOptions.DontRequireReceiver);
+
+                //tell the placement object they have been placed
+                m_Placements[i].SendMessage("OnPlaced", setDownGameObject, SendMessageOptions.DontRequireReceiver);
+
+                if(enableSnapping)
+                {
+                    setDownGameObject.transform.position = m_Placements[i].transform.position;
+                }
+
                 return true;
             }
         }

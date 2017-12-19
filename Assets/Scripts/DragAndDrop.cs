@@ -7,9 +7,6 @@ public class DragAndDrop : MonoBehaviour {
     private bool isMoving = false;
     private Vector2 mousePosition;
 
-    public GameObject[] m_Placements;
-
-
 	// Use this for initialization
 	void Start () {
 		
@@ -26,6 +23,7 @@ public class DragAndDrop : MonoBehaviour {
 
         //get the mouse position in world cooridinates
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
         //move the sprite with the mouse position
         this.transform.position = new Vector2(mousePosition.x, mousePosition.y);
 
@@ -34,23 +32,22 @@ public class DragAndDrop : MonoBehaviour {
 
     private void OnMouseDown()
     {
-        if(!GameManager.instance.isDragging)
+        if(!DragAndDropManager.instance.isDragging)
         {
             isMoving = true;
-            GameManager.instance.isDragging = true;
+            DragAndDropManager.instance.isDragging = true;
         }
 
-        //Debug.Log("On Mouse Down");
     }
 
     private void OnMouseUp()
     {
-        if (GameManager.instance.isDragging && isMoving == true)
+        if (DragAndDropManager.instance.isDragging && isMoving == true)
         {
             isMoving = false;
-            GameManager.instance.isDragging = false;
+            DragAndDropManager.instance.isDragging = false;
             //check placements
-            bool isPlacedOnPlacement = GameManager.instance.isPlaced(this.gameObject);
+            bool isPlacedOnPlacement = DragAndDropManager.instance.isPlaced(this.gameObject);
             if(isPlacedOnPlacement == false)
             {
                 Debug.Log("Placed: " + isPlacedOnPlacement);
@@ -60,7 +57,8 @@ public class DragAndDrop : MonoBehaviour {
 
     public void OnPlaced(GameObject placement)
     {
-        Debug.Log("OnPlaced: " + placement.name);
+
+        //Debug.Log("OnPlaced: " + placement.name);
     }
 
 }
